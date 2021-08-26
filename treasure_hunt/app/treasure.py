@@ -41,15 +41,12 @@ class TreasureHunter:
         
         if input_option == 1:
             self.print_maps(treasure=False)
-            input('press any key to return back')
         
         if input_option == 2:
             self.print_maps(treasure=True)
-            input('press any key to return back')
         
         if input_option == 3:
             print(self.pos_treasure)
-            input('press any key to return back')
         
         if input_option == 4:
             self.input_treasure()
@@ -60,6 +57,7 @@ class TreasureHunter:
         if input_option == 0:
             exit()
 
+        input('press any key to return back')
         return self.pick_option()
 
     def play_game(self):
@@ -69,32 +67,55 @@ class TreasureHunter:
         
         posX = self.pos_user[0][0]
         posY = self.pos_user[0][1]
-        posCombine = [posX,posY]
         
-        possible_pos_up = '0-'+str(self.count_coordinate_possibily(posCombine,ignore_wall=False))
-        up_mv = input('up/north ('+possible_pos_up+'):')
+        moving_operation = []
+        moving_operation.append(['up/north','UP',False])
+        moving_operation.append(['right/east','RIGHT',True])
+        moving_operation.append(['down/south','DOWN',True])
         
-        posX = posX - int(up_mv)
-        posCombine = [posX,posY]
+        result = None
         
-        possible_pos_rg = '0-'+str(self.count_coordinate_possibily(posCombine, "RIGHT"))
-        right_mv = input('right/east ('+possible_pos_rg+'):')
+        for operation in moving_operation:
+            result = self.set_updated_coordinate(posX, posY, operation[0], operation[1], operation[2])
+
+            if not result:
+                break
         
-        posY = posY + int(right_mv)
-        posCombine = [posX,posY]
-        
-        possible_pos_dw = '0-'+str(self.count_coordinate_possibily(posCombine, "DOWN"))
-        down_mv = input('down/south ('+possible_pos_dw+'):')
-        
-        posX = posX + int(down_mv)
-        posCombine = [posX,posY]
-        
-        if posCombine in self.pos_treasure:
+        if result and result in self.pos_treasure:
             print('Congratulations, You found the treasure...')
-        else:
+        elif result:
             print('Is just ordinary road...')
+        else:
+            print('Is seems blocked...')
+
+    def set_updated_coordinate(self, posX, posY, pos_text='up/north', pos='UP', ignore_wall=True):
+        posCombine = [posX,posY]
+        possible_count = '0-'+str(self.count_coordinate_possibily(posCombine,pos=pos,ignore_wall=ignore_wall))
+        moving = input(pos_text+' ('+possible_count+'):')
         
-        input('press any key to return back')
+        is_blocked = self.is_route_blocked(posCombine,int(moving),pos)
+        
+        if is_blocked:
+            return None
+        
+        posX = posX - int(moving)
+        return [posX,posY]
+
+    def is_route_blocked(self, coordinate, move, pos = 'UP'):
+        posX = coordinate[0]
+        posY = coordinate[1]
+        
+        for add in range(move):
+            if pos == 'UP':
+                posX -= (add+1)
+            elif pos == 'RIGHT':
+                posY += (add+1)
+            elif pos == 'DOWN':
+                posX += (add+1)
+            
+            if self.map_data[posX][posY] == '#':
+                return True
+        return False
 
     def count_coordinate_possibily(self, coordinate, pos = 'UP', ignore_wall=True):
         found = 0
@@ -223,4 +244,4 @@ class TreasureHunter:
             
         self.load_treasure(self.treasure_num)
         self.print_maps(treasure=True, clear=False)
-        input('press any key to return back')
+        
