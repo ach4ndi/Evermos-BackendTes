@@ -18,6 +18,7 @@ from django.urls import path
 from rest_framework import routers
 
 from product.views.item import ItemViewSet
+from product.views.cart import CartViewSet, CartItemViewSet
 
 API_PREFIX = 'api'
 
@@ -26,5 +27,7 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('{}/item/'.format(API_PREFIX), ItemViewSet.as_view({'get': 'list'})),
+    path('{}/cart/'.format(API_PREFIX), CartViewSet.as_view({'get': 'list'})),
+    path('{}/cart/item/'.format(API_PREFIX), CartItemViewSet.as_view({'get': 'list'})),
 ]
 
