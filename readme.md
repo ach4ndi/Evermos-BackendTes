@@ -85,6 +85,7 @@ just cli application, checking condition each array on matrix of map.
     http://127.0.0.1:8000/admin
     http://127.0.0.1:8000/api/item/?format=api
     ```
+    You can explorer easier with django admin or using django rest api page to testing out api.
 
 ### 2. Running Treasure Hunt App ###
 * Make sure your machine is already installed python 3.7, before running PoC application. 
