@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
 
-from product.views.item import ItemViewSet
-from product.views.cart import CartViewSet, CartItemViewSet
+from product.views.item import ItemViewSet, ItemDetailViewSet
+from product.views.cart import CartViewSet, CartDetailViewSet,CartItemViewSet
 
 API_PREFIX = 'api'
 
@@ -26,8 +26,18 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('{}/item/'.format(API_PREFIX), ItemViewSet.as_view({'get': 'list'})),
-    path('{}/cart/'.format(API_PREFIX), CartViewSet.as_view({'get': 'list'})),
-    path('{}/cart/item/'.format(API_PREFIX), CartItemViewSet.as_view({'get': 'list'})),
+    path('{}/item/'.format(API_PREFIX), ItemDetailViewSet.as_view({'get': 'list'})),
+    path('{}/item/<int:pk>'.format(API_PREFIX), ItemViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        })),
+    path('{}/cart/'.format(API_PREFIX), CartDetailViewSet.as_view({'get': 'list'})),
+    path('{}/cart/<int:pk>'.format(API_PREFIX), CartViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        })),
 ]
-
